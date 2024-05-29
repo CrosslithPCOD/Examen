@@ -1,0 +1,20 @@
+:id:
+3
+:vraag:
+Wat is y in y=5x+2 als x=3?
+:antwoord1:
+17
+:antwoord2:
+0
+:antwoord3:
+0
+:antwoord4:
+0
+:vak:
+Wiskunde
+:hoofdstuk:
+H2
+:niveau:
+Bachelor
+:graad:
+2

@@ -1,0 +1,20 @@
+:id:
+4
+:vraag:
+Wiskunde H3
+:antwoord1:
+3
+:antwoord2:
+asdaf
+:antwoord3:
+0
+:antwoord4:
+0
+:vak:
+Wiskunde
+:hoofdstuk:
+H3
+:niveau:
+Master
+:graad:
+4

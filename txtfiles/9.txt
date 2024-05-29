@@ -1,0 +1,20 @@
+:id:
+9
+:vraag:
+Scheikunde H6
+:antwoord1:
+15
+:antwoord2:
+2
+:antwoord3:
+9
+:antwoord4:
+4
+:vak:
+Scheikunde
+:hoofdstuk:
+H6
+:niveau:
+Master
+:graad:
+5

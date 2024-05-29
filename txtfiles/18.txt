@@ -1,0 +1,20 @@
+:id:
+18
+:vraag:
+Scheikunde H2
+:antwoord1:
+2
+:antwoord2:
+0
+:antwoord3:
+0
+:antwoord4:
+0
+:vak:
+Scheikunde
+:hoofdstuk:
+H2
+:niveau:
+Master
+:graad:
+4

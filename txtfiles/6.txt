@@ -1,0 +1,20 @@
+:id:
+6
+:vraag:
+Natuurkunde H6
+:antwoord1:
+6
+:antwoord2:
+0
+:antwoord3:
+0
+:antwoord4:
+0
+:vak:
+Natuurkunde
+:hoofdstuk:
+H6
+:niveau:
+Master
+:graad:
+6
