@@ -1,6 +1,6 @@
 <?php
 echo "Debugging debug.php";
-require 'header.php';
+require_once 'header.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     require 'conn/connect.php';
@@ -24,36 +24,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $chapters = is_array($chapters) ? $chapters : [$chapters];
     $categories = is_array($categories) ? $categories : [$categories];
     
-    $tagsStr = is_array($tags) ? implode(',', $tags) . ',' : $tags;
-    $coursesStr = is_array($courses) ? implode(',', $courses) . ',' : $courses;
-    $chaptersStr = is_array($chapters) ? implode(',', $chapters) . ',' : $chapters;
-    $categoriesStr = is_array($categories) ? implode(',', $categories) . ',' : $categories;
+    $tagsStr = implode(',', $tags);
+    $coursesStr = implode(',', $courses);
+    $chaptersStr = implode(',', $chapters);
+    $categoriesStr = implode(',', $categories);
     
+    $vraag = new Vraag();  // Ensure you create an instance of Vraag
     $vraag->createVraag($type, $title, $points, $time, $image, $questionText, $feedback, $hint, $pool, $tagsStr, $coursesStr, $chaptersStr, $categoriesStr);
     
     if ($type === 'MC' || $type === 'MS') {
-        $NumberOptions = isset($_POST["NumberOptions"]) ? intval($_POST["NumberOptions"]) : 0;
+        $NumberOptions = $_POST["NumberOptions"];
         $OptionUnique = $_POST["OptionUnique"];
         
-        try {
+        echo "Debugging NumberOptions: ";
+        var_dump($NumberOptions);
+        
+        if (!empty($NumberOptions) && is_array($NumberOptions)) {
             $vraag->insertOption($title, $NumberOptions, $OptionUnique);
             
-            if (!empty($NumberOptions)) {
-                for ($i = 0; $i < count($NumberOptions); $i++) {
-                    $optionTitle = $_POST["OptionTitle"][$i];
-                    $optionPoints = $_POST["OptionPoints"][$i];
-                    $optionFeedback = $_POST["OptionFeedback"][$i];
-                    $optionRequired = $_POST["OptionRequired"][$i];
-                    $optionExpression = $_POST["OptionExpression"][$i];
-                    
-                    $vraag->insertOptionIndividual($title, $optionTitle, $optionPoints, $optionFeedback, $optionRequired, $optionExpression);
-                }
-            } else {
-                echo"no numberoption given";
+            for ($i = 0; $i < count($NumberOptions); $i++) {
+                $optionTitle = $_POST["OptionTitle"][$i];
+                $optionPoints = $_POST["OptionPoints"][$i];
+                $optionFeedback = $_POST["OptionFeedback"][$i];
+                $optionRequired = $_POST["OptionRequired"][$i];
+                $optionExpression = $_POST["OptionExpression"][$i];
+                
+                $vraag->insertOptionIndividual($title, $optionTitle, $optionPoints, $optionFeedback, $optionRequired, $optionExpression);
             }
-        } catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
+        } else {
+            echo "No NumberOptions given or NumberOptions is not an array.";
         }
     }
 }
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 require 'header.php';
-echo "Debugging debug.php";
+echo "Debugging home.php";
 
 function validateForm() {
     $type = $_POST["type"];

@@ -215,9 +215,7 @@ class Vraag {
     public static function fetchTypes() {
         require 'connect.php';
         $types = [];
-        $stmt = $conn->query("
-            SELECT DISTINCT type
-            FROM types
+        $stmt = $conn->query("SELECT DISTINCT type FROM types
         ");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $types[] = $row['type'];
@@ -230,22 +228,59 @@ class Vraag {
     public static function fetchPools() {
         require 'connect.php';
         $pools = [];
-        $stmt = $conn->query("SELECT name FROM pool");
+        $allPool = null;
+        
+        $stmtAll = $conn->prepare("SELECT COUNT(*) as count FROM pool WHERE name = 'all'");
+        $stmtAll->execute();
+        $rowCount = $stmtAll->fetch(PDO::FETCH_ASSOC)['count'];
+        
+        if ($rowCount > 0) {
+            $stmtAll = $conn->prepare("SELECT name FROM pool WHERE name = 'all'");
+            $stmtAll->execute();
+            $allPool = $stmtAll->fetch(PDO::FETCH_ASSOC)['name'];
+        }
+        
+        $stmt = $conn->query("SELECT DISTINCT name FROM pool WHERE name != 'all'");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $pools[] = $row['name'];
         }
+        
+        if ($allPool) {
+            echo "<input type='checkbox' id='$allPool' name='pools[]' value='$allPool'>";
+            echo "<label for='$allPool'>$allPool</label><br>";
+        }
+        
         foreach ($pools as $pool) {
-            echo "<option value='$pool'>$pool</option>";
+            echo "<input type='checkbox' id='$pool' name='pools[]' value='$pool'>";
+            echo "<label for='$pool'>$pool</label><br>";
         }
     }
     
     public static function fetchTags() {
         require 'connect.php';
         $tags = [];
-        $stmt = $conn->query("SELECT name FROM tags");
+        $allTag = null;
+        
+        $stmtAll = $conn->prepare("SELECT COUNT(*) as count FROM tags WHERE name = 'all'");
+        $stmtAll->execute();
+        $rowCount = $stmtAll->fetch(PDO::FETCH_ASSOC)['count'];
+        
+        if ($rowCount > 0) {
+            $stmtAll = $conn->prepare("SELECT name FROM tags WHERE name = 'all'");
+            $stmtAll->execute();
+            $allTag = $stmtAll->fetch(PDO::FETCH_ASSOC)['name'];
+        }
+        
+        $stmt = $conn->query("SELECT DISTINCT name FROM tags WHERE name != 'all'");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $tags[] = $row['name'];
         }
+        
+        if ($allTag) {
+            echo "<input type='checkbox' id='$allTag' name='tags[]' value='$allTag'>";
+            echo "<label for='$allTag'>$allTag</label><br>";
+        }
+        
         foreach ($tags as $tag) {
             echo "<input type='checkbox' id='$tag' name='tags[]' value='$tag'>";
             echo "<label for='$tag'>$tag</label><br>";
@@ -255,10 +290,28 @@ class Vraag {
     public static function fetchCourses() {
         require 'connect.php';
         $courses = [];
-        $stmt = $conn->query("SELECT name FROM courses");
+        $allCourse = null;
+        
+        $stmtAll = $conn->prepare("SELECT COUNT(*) as count FROM courses WHERE name = 'all'");
+        $stmtAll->execute();
+        $rowCount = $stmtAll->fetch(PDO::FETCH_ASSOC)['count'];
+        
+        if ($rowCount > 0) {
+            $stmtAll = $conn->prepare("SELECT name FROM courses WHERE name = 'all'");
+            $stmtAll->execute();
+            $allCourse = $stmtAll->fetch(PDO::FETCH_ASSOC)['name'];
+        }
+        
+        $stmt = $conn->query("SELECT DISTINCT name FROM courses WHERE name != 'all'");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $courses[] = $row['name'];
         }
+        
+        if ($allCourse) {
+            echo "<input type='checkbox' id='$allCourse' name='courses[]' value='$allCourse'>";
+            echo "<label for='$allCourse'>$allCourse</label><br>";
+        }
+        
         foreach ($courses as $course) {
             echo "<input type='checkbox' id='$course' name='courses[]' value='$course'>";
             echo "<label for='$course'>$course</label><br>";
@@ -268,23 +321,59 @@ class Vraag {
     public static function fetchChapters() {
         require 'connect.php';
         $chapter = [];
-        $stmt = $conn->query("SELECT name FROM chapters");
+        $allChapter = null;
+        
+        $stmtAll = $conn->prepare("SELECT COUNT(*) as count FROM chapters WHERE name = 'all'");
+        $stmtAll->execute();
+        $rowCount = $stmtAll->fetch(PDO::FETCH_ASSOC)['count'];
+        
+        if ($rowCount > 0) {
+            $stmtAll = $conn->prepare("SELECT name FROM chapters WHERE name = 'all'");
+            $stmtAll->execute();
+            $allChapter = $stmtAll->fetch(PDO::FETCH_ASSOC)['name'];
+        }
+        
+        $stmt = $conn->query("SELECT DISTINCT name FROM chapters WHERE name != 'all'");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $chapter[] = $row['name'];
         }
-        foreach ($chapter as $chapter) {
-            echo "<input type='checkbox' id='$chapter' name='chapters[]' value='$chapter'>";
-            echo "<label for='$chapter'>$chapter</label><br>";
+        
+        if ($allChapter) {
+            echo "<input type='checkbox' id='$allChapter' name='chapters[]' value='$allChapter'>";
+            echo "<label for='$allChapter'>$allChapter</label><br>";
+        }
+        
+        foreach ($chapter as $chapterName) {
+            echo "<input type='checkbox' id='$chapterName' name='chapters[]' value='$chapterName'>";
+            echo "<label for='$chapterName'>$chapterName</label><br>";
         }
     }
     
     public static function fetchCategories() {
         require 'connect.php';
         $categories = [];
-        $stmt = $conn->query("SELECT name FROM categories");
+        $allCategory = null;
+        
+        $stmtAll = $conn->prepare("SELECT COUNT(*) as count FROM categories WHERE name = 'all'");
+        $stmtAll->execute();
+        $rowCount = $stmtAll->fetch(PDO::FETCH_ASSOC)['count'];
+        
+        if ($rowCount > 0) {
+            $stmtAll = $conn->prepare("SELECT name FROM categories WHERE name = 'all'");
+            $stmtAll->execute();
+            $allCategory = $stmtAll->fetch(PDO::FETCH_ASSOC)['name'];
+        }
+        
+        $stmt = $conn->query("SELECT DISTINCT name FROM categories WHERE name != 'all'");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $categories[] = $row['name'];
         }
+        
+        if ($allCategory) {
+            echo "<input type='checkbox' id='$allCategory' name='categories[]' value='$allCategory'>";
+            echo "<label for='$allCategory'>$allCategory</label><br>";
+        }
+        
         foreach ($categories as $category) {
             echo "<input type='checkbox' id='$category' name='categories[]' value='$category'>";
             echo "<label for='$category'>$category</label><br>";
@@ -293,59 +382,15 @@ class Vraag {
     
     public function createVraag($type, $title, $points, $time, $image, $questionText, $feedback, $hint, $pool, $tagsStr, $coursesStr, $chaptersStr, $categoriesStr) {
         require 'connect.php';
-        
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM vraag WHERE Title = ?");
-        $stmt->execute([$title]);
-        $count = $stmt->fetchColumn();
-        
-        if ($count > 0) {
-            $stmt = $conn->prepare("UPDATE vraag SET Type = ?, Points = ?, Time = ?, Image = ?, QuestionText = ?, Feedback = ?, Hint = ?, Pool = ?, Tags = ?, Course = ?, Chapter = ?, Category = ? WHERE Title = ?");
-            $stmt->execute([$type, $points, $time, $image, $questionText, $feedback, $hint, $pool, $tagsStr, $coursesStr, $chaptersStr, $categoriesStr, $title]);
-        } else {
-            $stmt = $conn->prepare("INSERT INTO vraag (Type, Title, Points, Time, Image, QuestionText, Feedback, Hint, Pool, Tags, Course, Chapter, Category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$type, $title, $points, $time, $image, $questionText, $feedback, $hint, $pool, $tagsStr, $coursesStr, $chaptersStr, $categoriesStr]);
-        }
     }
     
     public function insertOption($title, $NumberOptions, $OptionUnique) {
         require 'connect.php';
-        
-        $stmt = $conn->prepare("SELECT ID FROM vraag WHERE Title = ?");
-        $stmt->execute([$title]);
-        $VraagID = $stmt->fetchColumn();
-        
-        if ($VraagID === false) {
-            throw new Exception("No vraag found with the given title.");
-        }
-        
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM vraagmcms WHERE VraagID = ?");
-        $stmt->execute([$VraagID]);
-        $count = $stmt->fetchColumn();
-        
-        if ($count > 0) {
-            // Update existing entry
-            $stmt = $conn->prepare("UPDATE vraagmcms SET NumberOptions = ?, OptionUnique = ? WHERE VraagID = ?");
-            $stmt->execute([count($NumberOptions), $OptionUnique, $VraagID]);
-        } else {
-            // Insert new entry
-            $stmt = $conn->prepare("INSERT INTO vraagmcms (VraagID, NumberOptions, OptionUnique) VALUES (?, ?, ?)");
-            $stmt->execute([$VraagID, count($NumberOptions), $OptionUnique]);
-        }
     }
     
     
     public function insertOptionIndividual($title, $optionTitle, $optionPoints, $optionFeedback, $optionRequired, $optionExpression) {
         require 'connect.php';
-        
-        $stmt = $conn->prepare("SELECT ID FROM vraag WHERE Title = ?");
-        $stmt->execute([$title]);
-        $VraagID = $stmt->fetchColumn();
-        
-        // Prepare and execute the SQL query
-        $stmt = $conn->prepare("INSERT INTO optionmcms (VraagID, OptionTitle, OptionPoints, OptionFeedback, OptionRequired, OptionExpression) VALUES (:VraagID, :optionTitle, :optionPoints, :optionFeedback, :optionRequired, :optionExpression)");
-        $stmt->execute(array(':VraagID' => $VraagID, ':optionTitle' => $optionTitle, ':optionPoints' => $optionPoints, ':optionFeedback' => $optionFeedback, ':optionRequired' => $optionRequired, ':optionExpression' => $optionExpression));
-        
-        echo "Data inserted successfully.";
     }
 }
 
