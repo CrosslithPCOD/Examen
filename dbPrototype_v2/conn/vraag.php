@@ -228,31 +228,12 @@ class Vraag {
     public static function fetchPools() {
         require 'connect.php';
         $pools = [];
-        $allPool = null;
-        
-        $stmtAll = $conn->prepare("SELECT COUNT(*) as count FROM pool WHERE name = 'all'");
-        $stmtAll->execute();
-        $rowCount = $stmtAll->fetch(PDO::FETCH_ASSOC)['count'];
-        
-        if ($rowCount > 0) {
-            $stmtAll = $conn->prepare("SELECT name FROM pool WHERE name = 'all'");
-            $stmtAll->execute();
-            $allPool = $stmtAll->fetch(PDO::FETCH_ASSOC)['name'];
-        }
-        
-        $stmt = $conn->query("SELECT DISTINCT name FROM pool WHERE name != 'all'");
+        $stmt = $conn->query("SELECT name FROM pool");
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $pools[] = $row['name'];
         }
-        
-        if ($allPool) {
-            echo "<input type='checkbox' id='$allPool' name='pools[]' value='$allPool'>";
-            echo "<label for='$allPool'>$allPool</label><br>";
-        }
-        
         foreach ($pools as $pool) {
-            echo "<input type='checkbox' id='$pool' name='pools[]' value='$pool'>";
-            echo "<label for='$pool'>$pool</label><br>";
+            echo "<option value='$pool'>$pool</option>";
         }
     }
     
@@ -382,15 +363,82 @@ class Vraag {
     
     public function createVraag($type, $title, $points, $time, $image, $questionText, $feedback, $hint, $pool, $tagsStr, $coursesStr, $chaptersStr, $categoriesStr) {
         require 'connect.php';
+        
+        $deleteStmt = $conn->prepare("DELETE FROM vraag WHERE Title = ?");
+        $deleteStmt->bindParam(1, $title);
+        $deleteStmt->execute();
+        
+        $deleteStmt = $conn->prepare("DELETE FROM vraagmcms WHERE Title = ?");
+        $deleteStmt->bindParam(1, $title);
+        $deleteStmt->execute();
+        
+        $deleteStmt = $conn->prepare("DELETE FROM vraag WHERE VraagID = ?");
+        $deleteStmt->bindParam(1, $title);
+        $deleteStmt->execute();
+        
+        $insertStmt = $conn->prepare("INSERT INTO vraag (Type, Title, Points, Time, Image, QuestionText, Feedback, Hint, Pool, Tags, Course, Chapter, Category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insertStmt->bindParam(1, $type);
+        $insertStmt->bindParam(2, $title);
+        $insertStmt->bindParam(3, $points);
+        $insertStmt->bindParam(4, $time);
+        $insertStmt->bindParam(5, $image);
+        $insertStmt->bindParam(6, $questionText);
+        $insertStmt->bindParam(7, $feedback);
+        $insertStmt->bindParam(8, $hint);
+        $insertStmt->bindParam(9, $pool);
+        $insertStmt->bindParam(10, $tagsStr);
+        $insertStmt->bindParam(11, $coursesStr);
+        $insertStmt->bindParam(12, $chaptersStr);
+        $insertStmt->bindParam(13, $categoriesStr);
+        $insertStmt->execute();
+        
+        $insertStmt->closeCursor();
     }
     
-    public function insertOption($title, $NumberOptions, $OptionUnique) {
+    
+    public function insertOption($title, $numberOptions, $optionUnique) {
         require 'connect.php';
+        
+        $search = $conn->prepare("SELECT ID FROM vraag WHERE Title = ?");
+        $search->bindParam(1, $title);
+        $search->execute();
+        $result = $search->fetch(PDO::FETCH_ASSOC);
+        $vraagID = $result['ID'];
+        
+        $delete = $conn->prepare("DELETE FROM vraagmcms WHERE VraagID = ?");
+        $delete->bindParam(1, $vraagID);
+        $delete->execute();
+        
+        $stmt = $conn->prepare("INSERT INTO vraagmcms (VraagID, NumberOptions, OptionUnique) VALUES (?, ?, ?)");
+        
+        $stmt->bindParam(1, $vraagID);
+        $stmt->bindParam(2, $numberOptions);
+        $stmt->bindParam(3, $optionUnique);
+        
+        $stmt->execute();
+        $stmt->closeCursor();
     }
     
     
-    public function insertOptionIndividual($title, $optionTitle, $optionPoints, $optionFeedback, $optionRequired, $optionExpression) {
+    public function insertOptionIndividual($title, $optionNumber, $optionTitle, $optionPoints, $optionFeedback, $optionRequired, $optionExpression) {
         require 'connect.php';
+        
+        $search = $conn->prepare("SELECT ID FROM vraag WHERE Title = ?");
+        $search->bindParam(1, $title);
+        $search->execute();
+        $result = $search->fetch(PDO::FETCH_ASSOC);
+        $optionID = $result['ID'];
+        
+        $stmt = $conn->prepare("INSERT INTO optionmcms (OptionID, OptionNumber, Option, OptionPoints, OptionFeedback, OptionRequired, OptionExpression) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bindParam(1, $optionID);
+        $stmt->bindParam(2, $optionNumber);
+        $stmt->bindParam(3, $optionTitle);
+        $stmt->bindParam(4, $optionPoints);
+        $stmt->bindParam(5, $optionFeedback);
+        $stmt->bindParam(6, $optionRequired);
+        $stmt->bindParam(7, $optionExpression);
+        
+        $stmt->execute();
     }
 }
 

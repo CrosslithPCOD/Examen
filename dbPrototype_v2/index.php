@@ -22,12 +22,10 @@ echo "Home.php";
             <input type="text" id="title" name="title" required><br><br>
             
             <label for="points">Points:</label><br>
-            <input type="number" id="points" name="points">
-            <p>If left blank, default 100 points.</p><br>
+            <input type="number" id="points" name="points"><br><br>
             
             <label for="time">Time:</label><br>
-            <input type="number" id="time" name="time">
-            <p>If left blank, default 60 seconds.</p><br>
+            <input type="number" id="time" name="time"><br><br>
             
             <label for="image">Image:</label><br>
             <input type="text" id="image" name="image"><br><br>
@@ -63,11 +61,11 @@ echo "Home.php";
             <br>
         </div>
         <div class="right-column" id="SHOWMCMS" style="display: none;">
-            <label for="NumberOptions">Option Amount (1-9):</label><br>
-            <input placeholder="1" type="number" id="NumberOptions" name="NumberOptions[]" min="1" max="9" maxlength="1"><br><br>
+            <label for="numberoptions">Option Amount (1-9):</label><br>
+            <input placeholder="1" type="number" id="numberoptions" name="numberoptions" min="1" max="9" maxlength="1"><br><br>
             
-            <label for="OptionUnique">Option Unique (1 or multiple):</label><br>
-            <select id="OptionUnique" name="OptionUnique">
+            <label for="optionunique">Option Unique (1 or multiple):</label><br>
+            <select id="optionunique" name="optionunique">
                 <option value="1">True</option>
                 <option value="0">False</option>
             </select><br><br>
@@ -82,19 +80,16 @@ echo "Home.php";
 function showWater() {
     var type = document.getElementById("type").value;
     var postres = document.getElementById("chosenType");
-    var waterDiv = document.getElementById("SHOWMCMS");
-
-    if (type == "MC") {
-        waterDiv.style.display = "block";
-        postres.innerHTML = "Multiple Choice";
-    } else if (type == "MS") {
-        waterDiv.style.display = "block";
-        postres.innerHTML = "Multiple Selection";
+    var mcmsDiv = document.getElementById("SHOWMCMS");
+    
+    if (type == "MC" || type == "MS") {
+        mcmsDiv.style.display = "block";
+        postres.innerHTML = type == "MC" ? "Multiple Choice" : "Multiple Selection";
     } else if (type == "WR") {
-        waterDiv.style.display = "none";
+        mcmsDiv.style.display = "none";
         postres.innerHTML = "Written Response";
     } else if (type == "TF") {
-        waterDiv.style.display = "none";
+        mcmsDiv.style.display = "none";
         postres.innerHTML = "True or False";
     }
 }
@@ -104,6 +99,78 @@ document.addEventListener("DOMContentLoaded", function() {
     
     var typeSelect = document.getElementById("type");
     typeSelect.addEventListener("change", showWater);
+});
+
+function generateOptionFields() {
+    var numOptions = document.getElementById("numberoptions").value;
+    var optionsDiv = document.getElementById("additionalOptions");
+    optionsDiv.innerHTML = ""; // Clear previous fields
+    
+    for (var i = 1; i <= numOptions; i++) {
+        var optionLabel = document.createElement("label");
+        optionLabel.textContent = "Option " + i + ":";
+        
+        var optionInput = document.createElement("input");
+        optionInput.type = "text";
+        optionInput.name = "option" + i;
+        
+        var optionPointsLabel = document.createElement("label");
+        optionPointsLabel.textContent = "Points:";
+        
+        var optionPointsInput = document.createElement("input");
+        optionPointsInput.type = "number";
+        optionPointsInput.name = "optionPoints" + i;
+        
+        var optionFeedbackLabel = document.createElement("label");
+        optionFeedbackLabel.textContent = "Feedback:";
+        
+        var optionFeedbackInput = document.createElement("input");
+        optionFeedbackInput.type = "text";
+        optionFeedbackInput.name = "optionFeedback" + i;
+        
+        var optionRequiredLabel = document.createElement("label");
+        optionRequiredLabel.textContent = "Required:";
+        
+        var optionRequiredInput = document.createElement("input");
+        optionRequiredInput.type = "checkbox";
+        optionRequiredInput.name = "optionRequired" + i;
+        
+        var optionExpressionLabel = document.createElement("label");
+        optionExpressionLabel.textContent = "Expression:";
+        
+        var optionExpressionInput = document.createElement("input");
+        optionExpressionInput.type = "checkbox";
+        optionExpressionInput.name = "optionExpression" + i;
+        
+        optionsDiv.appendChild(optionLabel);
+        optionsDiv.appendChild(optionInput);
+        optionsDiv.appendChild(document.createElement("br"));
+        
+        optionsDiv.appendChild(optionPointsLabel);
+        optionsDiv.appendChild(optionPointsInput);
+        optionsDiv.appendChild(document.createElement("br"));
+        
+        optionsDiv.appendChild(optionFeedbackLabel);
+        optionsDiv.appendChild(optionFeedbackInput);
+        optionsDiv.appendChild(document.createElement("br"));
+        
+        optionsDiv.appendChild(optionRequiredLabel);
+        optionsDiv.appendChild(optionRequiredInput);
+        optionsDiv.appendChild(document.createElement("br"));
+        
+        optionsDiv.appendChild(optionExpressionLabel);
+        optionsDiv.appendChild(optionExpressionInput);
+        optionsDiv.appendChild(document.createElement("br"));
+        optionsDiv.appendChild(document.createElement("br"));
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Generate fields when the page loads
+    generateOptionFields();
+    
+    var numberOptionsInput = document.getElementById("numberoptions");
+    numberOptionsInput.addEventListener("change", generateOptionFields);
 });
 </script>
 <?php require 'footer.php'; ?>
